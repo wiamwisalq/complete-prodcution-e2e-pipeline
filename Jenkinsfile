@@ -47,7 +47,11 @@ pipeline{
         stage("Quality Gate") {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                    // waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
                 }
             }
 
